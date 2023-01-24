@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3c1767f69c31571ec12d282d96b3ba4327084868
 import sys
 
 stacks = []
