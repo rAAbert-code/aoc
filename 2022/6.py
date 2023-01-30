@@ -17,20 +17,19 @@ def getfilename():
         sys.exit("Unknown argument")
     return dir_name + "/input/" + file_name
 
+def find_key(line, kl):
+    length = len(line)
+
+    for p in range(kl, length):
+        s = set(line[p-kl:p])
+        if len(s) == kl:
+            return p
+ 
 def puzzle(file):
     line = file.readline()
-    length = len(line)
-    p0, p1 = 0, 3
 
-    while p1 < length:
-        s = set(line[p0:p1+1])
-        if len(s) == 4:
-            # found key
-            break
-        else:
-            p0, p1 = p0+1, p1+1
-
-    print(p1+1)
+    print(find_key(line,4))
+    print(find_key(line,14))
 
 def main():
     file_name = getfilename()
