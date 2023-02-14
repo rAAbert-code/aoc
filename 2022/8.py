@@ -17,17 +17,6 @@ def getfilename():
         sys.exit("Unknown argument")
     return dir_name + "/input/" + file_name
 
-
-def check_col(heigh, col, data):
-    pass
-def check_row(height, col, row_data):
-    ints = [int(x) for x in row_data]
-    if max(ints[0:col]) < height:
-        if max(ints[col+1:]) < height:
-            return 1
-    return 0
-
-
 def is_visible(height, row, col, data):
     rows = len(data)
     cols = len(data[0])
@@ -48,7 +37,7 @@ def is_visible(height, row, col, data):
 
     return 0
 
-def get_scoreis_visible(height, row, col, data):
+def get_score(height, row, col, data):
     rows = len(data)
     cols = len(data[0])
     left = right = up = down = 0
