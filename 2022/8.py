@@ -63,26 +63,18 @@ def get_score(height, row, col, data):
     return tot_score
 
 def puzzle(file):
-    data_strings = file.read().split()
-    data = []
-    for line in data_strings:
-        ints = [int(x) for x in line]
-        data.append(ints)
+    data = file.read().split()
 
-    row = col = visibles = 0
-    score = hiscore = hicol = hirow = 0
-    for row_heights in data:
-        for height in row_heights:
+    visibles = 0
+    hiscore = hicol = hirow = 0
+    for row, row_heights in enumerate(data):
+        for col, height in enumerate(row_heights):
             visibles += is_visible(height, row, col, data)
             score = get_score(height, row, col, data)
             if score > hiscore:
-                hiscore = score
-                hirow = row
-                hicol = col
-            col += 1
+                hiscore, hirow, hicol = score, row, col
+            hiscore = max(score, hiscore)
             print(height, end="")
-        row += 1
-        col = 0
         print()
     print("visible trees:", visibles)
     print("Hiscore at", hirow, hicol, ":", hiscore)
