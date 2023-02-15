@@ -40,21 +40,27 @@ def is_visible(height, row, col, data):
 def get_score(height, row, col, data):
     rows = len(data)
     cols = len(data[0])
-    left = right = up = down = 0
-
+    tot_score = 1
 
     if row == 0 or row == rows-1 or col == 0 or col == cols-1:
-        # on the edge, so scenic scoe of zero
+        # on the edge, so scenic score of zero
         return 0
 
     # heights left, right, up, down
-    heights = [
+    trees4 = [
                 data[row][0:col][::-1], data[row][col+1:],
                 [row[col] for row in data][0:row][::-1],
                 [row[col] for row in data][row+1:]
-              ]
+            ]
+    for trees in trees4:
+        score = 0
+        for tree in trees:
+            score += 1
+            if tree >= height:
+                break
+        tot_score *= score
 
-    return 0
+    return tot_score
 
 def puzzle(file):
     data_strings = file.read().split()
@@ -64,17 +70,22 @@ def puzzle(file):
         data.append(ints)
 
     row = col = visibles = 0
-    score = hiscore =score_col = score_row = 0
+    score = hiscore = hicol = hirow = 0
     for row_heights in data:
         for height in row_heights:
             visibles += is_visible(height, row, col, data)
             score = get_score(height, row, col, data)
+            if score > hiscore:
+                hiscore = score
+                hirow = row
+                hicol = col
             col += 1
             print(height, end="")
         row += 1
         col = 0
         print()
     print("visible trees:", visibles)
+    print("Hiscore at", hirow, hicol, ":", hiscore)
 
 def main():
     file_name = getfilename()
