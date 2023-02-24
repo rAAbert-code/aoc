@@ -21,12 +21,12 @@ def getfilename():
 
 def puzzle(file):
     x,y = 0,1
-    h = t = [0,0] # [x,y]
-    visited = [t]
+    knot = [[0,0]]*10 # [x,y]
+
+    visited = [[[0,0]]]*10
 
     data = file.read().splitlines()
 
-    print(h, t)
     for op in data:
         d,l = op.split()
         l = int(l)
@@ -34,34 +34,42 @@ def puzzle(file):
 
         match d:
             case 'R':
-                h = [h[x]+l, h[y]]
-                while  h[x] - t[x] >= 2:
-                    t = [t[x]+1, h[y]]
-                    if t not in visited:
-                        visited.append(t)
+                for i in range(0,l):
+                    knot[0] = [knot[0][x]+1, knot[0][y]]
+                    for i in range(0,9):
+                        ch,ct = i, i+1 # current_head, current_tail
+                        if knot[ch][x] - knot[ct][x] >= 2:
+                            knot[ct] = [knot[ct][x]+1, knot[ch][y]]
+                            if knot[ct] not in visited[ct]:
+                                visited[ct].append(knot[ct])
             case 'L':
-                h = [h[x]-l, h[y]]
-                while t[x] - h[x] >= 2:
-                    t = [t[x]-1, h[y]]
-                    if t not in visited:
-                        visited.append(t)
+                for i in range(0,l):
+                    knot[0] = [knot[0][x]-1, knot[0][y]]
+                    for i in range(0,9):
+                        ch,ct = i, i+1 # current_head, current_tail
+                        while knot[ct][x] - knot[ch][x] >= 2:
+                            knot[ct] = [knot[ct][x]-1, knot[ch][y]]
+                            if knot[ct] not in visited[ct]:
+                                visited[ct].append(knot[ct])
             case 'U':
-                h = [h[x], h[y]+l]
-                while h[y] - t[y] >= 2:
-                    t = [h[x], t[y]+1]
-                    if t not in visited:
-                        visited.append(t)
+                knot[0] = [knot[0][x], knot[0][y]+l]
+                for i in range(0,9):
+                    ch,ct = i, i+1 # current_head, current_tail
+                    while knot[ch][y] - knot[ct][y] >= 2:
+                        knot[ct] = [knot[ch][x], knot[ct][y]+1]
+                        if knot[ct] not in visited[ct]:
+                            visited[ct].append(knot[ct])
             case 'D':
-                h = [h[x], h[y]-l]
-                while t[y] - h[y] >= 2:
-                    t = [h[x], t[y]-1]
-                    if t not in visited:
-                        visited.append(t)
-        print(h, t)
+                knot[0] = [knot[0][x], knot[0][y]-l]
+                for i in range(0,9):
+                    ch,ct = i, i+1 # current_head, current_tail
+                    while knot[ct][y] - knot[ch][y] >= 2:
+                        knot[ct] = [knot[ch][x], knot[ct][y]-1]
+                        if knot[ct] not in visited[ct]:
+                            visited[ct].append(knot[ct])
 
-    print("#:", len(visited))
-
-        
+    for i in range(0,10):
+        print(i, len(visited[i]))
 
 def main():
     file_name = getfilename()
