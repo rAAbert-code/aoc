@@ -7,6 +7,8 @@ import re
 import copy
 from operator import add, sub
 
+X,Y = 0,1
+
 def getfilename():
     args = sys.argv
     dir_name = os.path.dirname(args[0])
@@ -19,57 +21,72 @@ def getfilename():
         sys.exit("Unknown argument")
     return dir_name + "/input/" + file_name
 
-def puzzle(file):
-    x,y = 0,1
-    knot = [[0,0]]*10 # [x,y]
 
-    visited = [[[0,0]]]*10
+DIRS = {
+    "R": (1,0),
+    "L": (-1,0),
+    "U": (0,1),
+    "D": (0,-1)
+}
+
+def ADD(a,b):
+    return (a[X]+b[X], a[Y]+b[Y])
+
+def SUB(a,b):
+    return (a[X]-b[X], a[Y]-b[Y])
+
+def cmp(a,b):
+    if a[X] == b[X]: x = 0
+    if a[X] < b[X] : x = -1
+    x = 1
+    if a[Y] == b[Y]: y = 0
+    if a[Y] < b[Y] : y = -1
+    y = 1
+    return (x,y)
+
+def move(head, tail):
+    movement = cmp(head,tail) # How should the tail move (+/-1, +/-1) if needed
+    diff = SUB(head,tail) # what's tthe gap between the head and tail
+    if movement == diff: # the tail is close to the had and doesn't have to move
+        return tail
+    return ADD(tail, movement)
+
+def print_map(knots):
+    xs = [ knot[X] for knot in knots ]
+    ys = [ knot[Y] for knot in knots ]
+    xmin, xmax = min(xs), max(xs)
+    ymin, ymax = min(ys), max(ys)
+
+    row = [' '] * (xmax-xmin+1)
+    rows = [row] * (ymax-ymin+1)
+    for knot in knots:
+        rows[knot[Y]][knot[X]] = '#'
+
+    for row in rows:
+        print("".join(row))
+    print("---")
+
+    return
+
+def puzzle(file):
+    knots = [(0,0)]*10 # (x,y)
+
+    visited = [{(0,0)}]*10 # using a set to get rid of duplicates
 
     data = file.read().splitlines()
 
     for op in data:
-        d,l = op.split()
-        l = int(l)
-        print(d,l)
+        dir,step = op.split()
+        step = int(step)
 
-        match d:
-            case 'R':
-                for i in range(0,l):
-                    knot[0] = [knot[0][x]+1, knot[0][y]]
-                    for i in range(0,9):
-                        ch,ct = i, i+1 # current_head, current_tail
-                        if knot[ch][x] - knot[ct][x] >= 2:
-                            knot[ct] = [knot[ct][x]+1, knot[ch][y]]
-                            if knot[ct] not in visited[ct]:
-                                visited[ct].append(knot[ct])
-            case 'L':
-                for i in range(0,l):
-                    knot[0] = [knot[0][x]-1, knot[0][y]]
-                    for i in range(0,9):
-                        ch,ct = i, i+1 # current_head, current_tail
-                        while knot[ct][x] - knot[ch][x] >= 2:
-                            knot[ct] = [knot[ct][x]-1, knot[ch][y]]
-                            if knot[ct] not in visited[ct]:
-                                visited[ct].append(knot[ct])
-            case 'U':
-                knot[0] = [knot[0][x], knot[0][y]+l]
-                for i in range(0,9):
-                    ch,ct = i, i+1 # current_head, current_tail
-                    while knot[ch][y] - knot[ct][y] >= 2:
-                        knot[ct] = [knot[ch][x], knot[ct][y]+1]
-                        if knot[ct] not in visited[ct]:
-                            visited[ct].append(knot[ct])
-            case 'D':
-                knot[0] = [knot[0][x], knot[0][y]-l]
-                for i in range(0,9):
-                    ch,ct = i, i+1 # current_head, current_tail
-                    while knot[ct][y] - knot[ch][y] >= 2:
-                        knot[ct] = [knot[ch][x], knot[ct][y]-1]
-                        if knot[ct] not in visited[ct]:
-                            visited[ct].append(knot[ct])
+        for i in range(0,step):
+            knots[0] = ADD(knots[0], DIRS[dir])
 
-    for i in range(0,10):
-        print(i, len(visited[i]))
+            for j in range(0,9):
+                knots[j+1] = move(knots[j], knots[j+1])
+                visited[j+1].add(knots[j+1])
+
+            print_map(knots)
 
 def main():
     file_name = getfilename()
