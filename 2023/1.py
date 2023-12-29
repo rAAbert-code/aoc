@@ -6,22 +6,10 @@ import sys
 import re
 import copy
 
-def getfilename():
-    args = sys.argv
-    dir_name = os.path.dirname(args[0])
-    file_name = os.path.basename(args[0])[0]
-    if len(args) < 2:
-        file_name += ".data"
-    elif args[1] == "-s":
-        file_name += ".sample"
-    else:
-        sys.exit("Unknown argument")
-    return dir_name + "/input/" + file_name
-
-def puzzle(file):
+def p1(lines):
     sum = 0
 
-    for line in file:
+    for line in lines:
         first = last = -1
         for index, char in enumerate(line):
             if char.isdigit():
@@ -29,16 +17,54 @@ def puzzle(file):
                     first = int(char) 
                 last = int(char)
         number = first*10 + last
-        print(line,number)
         sum += number
-    print("sum:", sum)
+    return(sum)
 
-def main():
-    file_name = getfilename()
+numbers = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
-    with open(file_name, "r") as file:
-        puzzle(file)
+def p2(lines):
+    sum = 0
 
-if __name__ == "__main__":
-    main()
+    for line in lines:
+        length = len(line)
+        first = last = -1
+        index = 0
 
+        print(line)
+
+        while index < length:
+            digit = -1
+            #print(index)
+
+            #print("looking for integer")
+            c = line[index]
+            if c.isdigit():
+                digit = int(c)
+                print("Found", digit, "at index", index)
+            else:
+                #print("looking for text")
+                for i, number in enumerate(numbers):
+                    if line[index:].find(number) == 0:
+                        digit = i
+                        print("Found", number, digit, "at index", index)
+                        break
+
+            index += 1
+
+            if digit == -1:
+                #print("Didn't find a digit")
+                continue
+
+            # We found a digit
+            if first == -1:
+                first = digit
+            last = digit
+
+        number = first*10 + last
+        print(first, last, number, "\n")
+        sum += number
+    return(sum)
+
+               
+
+    return(sum)
