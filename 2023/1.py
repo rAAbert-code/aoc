@@ -30,23 +30,21 @@ def p2(lines):
         first = last = -1
         index = 0
 
-        print(line)
-
         while index < length:
-            digit = -1
+        #    digit = -1
             #print(index)
 
-            #print("looking for integer")
+            #print("looking for digit")
             c = line[index]
             if c.isdigit():
                 digit = int(c)
-                print("Found", digit, "at index", index)
+                #print("Found", digit, "at index", index)
             else:
                 #print("looking for text")
                 for i, number in enumerate(numbers):
                     if line[index:].find(number) == 0:
                         digit = i
-                        print("Found", number, digit, "at index", index)
+                        #print("Found", number, digit, "at index", index)
                         break
 
             index += 1
@@ -61,7 +59,7 @@ def p2(lines):
             last = digit
 
         number = first*10 + last
-        print(first, last, number, "\n")
+        #print(line, first, last, number, "\n")
         sum += number
     return(sum)
 
