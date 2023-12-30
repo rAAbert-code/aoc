@@ -20,49 +20,22 @@ def p1(lines):
         sum += number
     return(sum)
 
-numbers = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
 def p2(lines):
+    numbers = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
     sum = 0
 
     for line in lines:
-        length = len(line)
-        first = last = -1
-        index = 0
+        digits = []
 
-        while index < length:
-        #    digit = -1
-            #print(index)
-
-            #print("looking for digit")
-            c = line[index]
-            if c.isdigit():
-                digit = int(c)
-                #print("Found", digit, "at index", index)
+        for index, char in enumerate(line):
+            if char.isdigit():
+                digits.append(char)
             else:
-                #print("looking for text")
                 for i, number in enumerate(numbers):
                     if line[index:].find(number) == 0:
-                        digit = i
-                        #print("Found", number, digit, "at index", index)
+                        digits.append(i)
                         break
-
-            index += 1
-
-            if digit == -1:
-                #print("Didn't find a digit")
-                continue
-
-            # We found a digit
-            if first == -1:
-                first = digit
-            last = digit
-
-        number = first*10 + last
-        #print(line, first, last, number, "\n")
+        number = int(digits[0])*10 + int(digits[-1])
         sum += number
-    return(sum)
-
-               
-
     return(sum)
