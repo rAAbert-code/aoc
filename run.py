@@ -8,7 +8,10 @@ from importlib import import_module, reload
 
 
 def run(func, lines):
+    start = time.monotonic_ns()
     print(func(lines))
+    end = time.monotonic_ns()
+    print(f"[{(end-start) / 10**6:.3f} ms]")
 
 if __name__ == "__main__":
     now = datetime.now()
